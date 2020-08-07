@@ -22,6 +22,8 @@ public class Cell : MonoBehaviour
     private Rigidbody rigidbody = null;
     private List<Cell> affectingCells = new List<Cell>();
 
+    private Camera mainCamera = null;
+
     private void Awake()
     {
         colourReactions = new Dictionary<Colour, AnimationCurve> { { Colour.red, redReaction }, { Colour.green, blueReaction }, { Colour.blue, greenReaction } };
@@ -31,18 +33,33 @@ public class Cell : MonoBehaviour
         sphereCollider = GetComponent<SphereCollider>();
         rigidbody = GetComponent<Rigidbody>();
         meshRenderer.material.color = currentColour;
+        mainCamera = FindObjectOfType<Camera>();
     }
 
     void FixedUpdate()
     {
-        //List<Cell> instanceAffectingCells = affectingCells; Might need to instantiate due to modifications being done elsewhere!
+        //Update influences with other cells
         foreach(Cell cell in affectingCells)
         {
             Influence(cell.colour, cell.transform.position); 
             cell.Influence(this.colour, this.transform.position);
         }
 
-        //TODO: add a bit of friction
+        //If against a boundary, bounce
+        Vector3 screenPoint = mainCamera.WorldToScreenPoint(this.transform.position);
+        if (screenPoint.x <= 0 || screenPoint.x > Screen.width)
+        {
+            float xPos = screenPoint.x < 0 ? -mainCamera.ScreenToWorldPoint(new Vector3(Screen.width, 0, 0)).x : mainCamera.ScreenToWorldPoint(new Vector3(Screen.width,0,0)).x;
+            transform.position = new Vector3(xPos, transform.position.y, transform.position.z);
+            rigidbody.velocity = new Vector3(-rigidbody.velocity.x, rigidbody.velocity.y, rigidbody.velocity.z);
+            
+        }
+        if (screenPoint.y < 0 || screenPoint.y > Screen.height)
+        {
+            float yPos = screenPoint.y < 0 ? -mainCamera.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y : mainCamera.ScreenToWorldPoint(new Vector3(0, Screen.height, 0)).y;
+            transform.position = new Vector3(transform.position.x, yPos, transform.position.z);
+            rigidbody.velocity = new Vector3(rigidbody.velocity.x, -rigidbody.velocity.y, rigidbody.velocity.z);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
