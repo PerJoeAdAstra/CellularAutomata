@@ -18,7 +18,7 @@ public class Cell : MonoBehaviour
     private Color currentColour;
 
     private MeshRenderer meshRenderer = null;
-    private Collider collider = null;
+    private SphereCollider sphereCollider = null;
     private Rigidbody rigidbody = null;
     private List<Cell> affectingCells = new List<Cell>();
 
@@ -28,7 +28,7 @@ public class Cell : MonoBehaviour
         currentColour = colours[colour];
 
         meshRenderer = GetComponent<MeshRenderer>();
-        collider = GetComponent<Collider>();
+        sphereCollider = GetComponent<SphereCollider>();
         rigidbody = GetComponent<Rigidbody>();
         meshRenderer.material.color = currentColour;
     }
@@ -38,8 +38,8 @@ public class Cell : MonoBehaviour
         //List<Cell> instanceAffectingCells = affectingCells; Might need to instantiate due to modifications being done elsewhere!
         foreach(Cell cell in affectingCells)
         {
-            Influence(cell.currentColour); 
-            cell.Influence(this.currentColour);
+            Influence(cell.colour, cell.transform.position); 
+            cell.Influence(this.colour, this.transform.position);
         }
 
         //TODO: add a bit of friction
@@ -64,8 +64,19 @@ public class Cell : MonoBehaviour
         }
     }
 
-    private void Influence(Color colour)
+    private void Influence(Colour colour, Vector3 influencePosition)
     {
-        //TODO
+        Vector3 force = CalculateDirectionOfInfluence(influencePosition) * colourReactions[colour].Evaluate((Vector3.Distance(this.transform.position, influencePosition))/sphereCollider.radius);
+        this.rigidbody.AddForce(force, ForceMode.Impulse);
+    }
+
+    private Vector3 CalculateDirectionOfInfluence(Vector3 influencePosition)
+    {
+        return (influencePosition - this.transform.position).normalized;
+    }
+
+    private float CalculateDistance(Vector3 influencedPosition)
+    {
+        return 0f;
     }
 }
