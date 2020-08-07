@@ -330,11 +330,11 @@ MonoBehaviour:
     type: 3}
   greenCell: {fileID: 8509538909180529464, guid: 4d86eca81e912f74abd952e56097656b,
     type: 3}
-  chunks: 25
-  spawnProbability: 30
+  chunks: 50
+  spawnProbability: 10
   boundary: 20
   redRatio: 1
-  blueRatio: 1
+  blueRatio: 3
   greenRatio: 1
 --- !u!4 &1015390473
 Transform:

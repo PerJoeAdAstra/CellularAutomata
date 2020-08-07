@@ -74,7 +74,7 @@ public class Cell : MonoBehaviour
     {
         if (other.GetComponent<Cell>() is Cell cell)
         {
-            if (affectingCells.Contains(cell)) 
+            if (affectingCells.Contains(cell))
             {
                 affectingCells.Remove(cell);
             }
@@ -90,10 +90,5 @@ public class Cell : MonoBehaviour
     private Vector3 CalculateDirectionOfInfluence(Vector3 influencePosition)
     {
         return (influencePosition - this.transform.position).normalized;
-    }
-
-    private float CalculateDistance(Vector3 influencedPosition)
-    {
-        return 0f;
     }
 }

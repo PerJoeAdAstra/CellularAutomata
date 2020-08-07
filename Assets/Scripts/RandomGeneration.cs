@@ -25,9 +25,9 @@ public class RandomGeneration : MonoBehaviour
 
     void Start()
     {
-        for(int x = boundary; x < Screen.width - boundary; x += chunks)
+        for(int x = boundary; x < Screen.width - boundary; x += Screen.width/chunks)
         {
-            for(int y = boundary; y < Screen.height - boundary; y += chunks)
+            for(int y = boundary; y < Screen.height - boundary; y += Screen.height/chunks)
             {
                 //Random probability to spawn or not spawn
                 if(Random.Range(0f,100f) < (float)spawnProbability)
@@ -38,7 +38,7 @@ public class RandomGeneration : MonoBehaviour
                     GameObject toSpawn = null;
                     float type = Random.Range(0f, (redRatio+blueRatio+greenRatio));
                     if (type <= redRatio) toSpawn = redCell;
-                    else if (type <= (redRatio+greenRatio)) toSpawn = blueCell;
+                    else if (type <= (redRatio+blueRatio)) toSpawn = blueCell;
                     else toSpawn = greenCell;
 
                     Instantiate(toSpawn, spawnPosition, Quaternion.identity);
